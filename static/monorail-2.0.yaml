@@ -4767,8 +4767,6 @@ paths:
               $ref: '#/definitions/Error'
         tags:
         - /api/2.0
-        x-authentication-type:
-        - jwt
         x-privileges:
         - Write
         - notificationPost
