@@ -1,5 +1,5 @@
 info:
-  title: rackhd api 
+  title: rackhd api
   version: "2.1.1"
 basePath: /api/2.0
 consumes:
@@ -83,7 +83,7 @@ definitions:
         items:
           type: object
   hooks.2.0_HookPost:
-    description: Hook post schema 
+    description: Hook post schema
     type: object
     properties:
       url:
@@ -119,6 +119,20 @@ definitions:
     required:
     - nodeId
     - service
+    - config
+    type: object
+  node_config:
+    description: node settings
+    properties:
+      config:
+        type: object
+      service:
+        type: string
+      servertag:
+        type: string
+    required:
+    - service
+    - servertag
     - config
     type: object
   node.2.0_PartialNode:
@@ -188,7 +202,7 @@ definitions:
       node:
         type: string
       config:
-        type: object  
+        type: object
       service:
         type: string
   poller.2.0_PartialPoller:
@@ -1959,7 +1973,7 @@ paths:
         name: identifier
         required: true
         type: string
-      - description: 
+      - description:
           The name property set to the injectableName property of the workflow graph
         in: body
         name: body
@@ -2070,7 +2084,7 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/ipmi-obm-service_Obm'
+          $ref: '#/definitions/node_config'
       responses:
         201:
           description: Successfully put the OBM service
@@ -2613,7 +2627,7 @@ paths:
         name: mac
         required: false
         type: string
-      - description: 
+      - description:
           When macs parameters is not passed, passed with MAC adds IP address to lookup
         in: query
         name: ip
@@ -4771,6 +4785,156 @@ paths:
         - Write
         - notificationPost
       x-swagger-router-controller: notification
+  /nodeconfig:
+    get:
+      description:
+        Get a list of all ipmi settings that have been associated
+        with nodes.
+      operationId: nodeconfigGet
+      responses:
+        200:
+          description: Successfully retrieved the list of OBM service instances
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/obm'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+      summary: Get list of all OBM service instances
+      tags:
+      - /api/2.0
+      x-authentication-type:
+      - jwt
+      x-privileges:
+      - Read
+      - nodeconfigRead
+    put:
+      description:
+        Create or update the specified OBM service, and associate it with a node.
+      operationId: nodeconfigPut
+      parameters:
+      - description: The OBM settings information to create
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/node_config'
+      responses:
+        201:
+          description: Successfully put the OBM service
+          schema:
+            type: object
+        500:
+          description: OBM service creation failed
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+      summary: Put an OBM service
+      tags:
+      - /api/2.0
+      x-authentication-type:
+      - jwt
+      x-privileges:
+      - Write
+      - nodeconfigWrite
+      x-swagger-schema: nodeconfig
+    x-swagger-router-controller: nodeconfig
+  /nodeconfig/{id}:
+      delete:
+        description: Delete the specified lookup.
+        operationId: nodeconfigDeleteById
+        parameters:
+        - description: The identifier of the lookup to delete
+          in: path
+          name: id
+          required: true
+          type: string
+        responses:
+          204:
+            description: Successfully deleted lookup
+          404:
+            description: The specified lookup was not found
+            schema:
+              $ref: '#/definitions/Error'
+          default:
+            description: Unexpected error
+            schema:
+              $ref: '#/definitions/Error'
+        summary: Delete a lookup
+        tags:
+        - /api/2.0
+        x-authentication-type:
+        - jwt
+        x-privileges:
+        - Write
+        - lookupsRemove
+      get:
+        description: Get a nodeconfig by specifying its identifier.
+        operationId: nodeconfigGetById
+        parameters:
+        - description: The nodeconfig identifier
+          in: path
+          name: id
+          required: true
+          type: string
+        responses:
+          200:
+            description: Successfully retrieved the lookup
+          default:
+            description: Unexpected error
+            schema:
+              $ref: '#/definitions/Error'
+        summary: Get a nodeconfig
+        tags:
+        - /api/2.0
+        x-authentication-type:
+        - jwt
+        x-privileges:
+        - Read
+        - nodeconfigRead
+      patch:
+        description: Modify the properties of a lookup.
+        operationId: nodeconfigPatchById
+        parameters:
+        - description: The id of the lookup to patch
+          in: path
+          name: id
+          required: true
+          type: string
+        - description: The nodeconfig properties to be modified
+          in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/Lookups.2.0_LookupBase'
+        responses:
+          200:
+            description: Successfully modified the nodeconfig
+            schema:
+              $ref: '#/definitions/Lookups.2.0_LookupBase'
+          404:
+            description: The specified nodeconfig was not found
+            schema:
+              $ref: '#/definitions/Error'
+          default:
+            description: Unexpected error
+            schema:
+              $ref: '#/definitions/Error'
+        summary: Patch a nodeconfig
+        tags:
+        - /api/2.0
+        x-authentication-type:
+        - jwt
+        x-privileges:
+        - Write
+        - nodeconfigModify
+        x-swagger-schema: lookups.2.0.json#/definitions/LookupBase
+      x-swagger-router-controller: nodeconfig
 produces:
 - application/json
 schemes:

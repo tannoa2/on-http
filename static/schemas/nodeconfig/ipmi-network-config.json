@@ -1,0 +1,36 @@
+{
+    "title": "Node Setting",
+    "definitions": {
+    "Nodeconfig": {
+        "description": "Initial Node settings",
+            "type": "object",
+            "properties": {
+                "service": {
+                    "type": "string"
+                },
+                "servertag":{
+                    "type": "string"
+                },
+                "config": {
+                    "type": "object",
+                        "properties": {
+                        "ip": {
+                            "description": "BMC address",
+                                "type": "string"
+                        },
+                        "netmask": {
+                            "description": "IPMI username",
+                                "type": "string"
+                        },
+                        "gateway": {
+                            "description": "IPMI password",
+                                "type": "string"
+                        }
+                    },
+                    "required": ["ip"]
+                }
+            },
+        "required": ["service","servertag", "config"]
+    }
+}
+}
