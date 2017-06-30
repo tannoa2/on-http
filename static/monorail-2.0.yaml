@@ -344,12 +344,6 @@ definitions:
           host:
             description: IP address
             type: string
-          password:
-            description: Password
-            type: string
-          user:
-            description: Username
-            type: string
         type: object
       service:
         type: string
